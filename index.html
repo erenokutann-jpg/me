@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ☕️🍸🍻💖 </title>
+
+    <!-- WebP görselleri için ön yükleme (Preload) -->
+    <link rel="preload" as="image" href="number11.webp">
+    <link rel="preload" as="image" href="number16.webp">
+    <link rel="preload" as="image" href="number17.webp">
+    <link rel="preload" as="image" href="number18.webp">
+    <link rel="preload" as="image" href="number19.webp">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #2d122d 0%, #0f172a 100%);
+            color: #ffffff;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(30, 20, 40, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 35px 25px;
+            border-radius: 28px;
+            box-shadow: 0 20px 50px rgba(236, 72, 153, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 420px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 19px;
+            font-weight: 600;
+            color: #fdf2f8;
+            min-height: 75px;
+            margin: 10px 0 20px 0;
+            line-height: 1.45;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-wrapper {
+            width: 100%;
+            max-width: 240px;
+            height: 200px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: opacity 0.15s ease;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            min-height: 60px;
+            position: relative;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(236, 72, 153, 0.45);
+            z-index: 100;
+            min-width: 110px;
+        }
+
+        #noBtn {
+            background-color: #334155;
+            color: #cbd5e1;
+            min-width: 110px;
+            transition: left 0.2s ease, top 0.2s ease;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 id="question"> Merhaba Meriç bir şeyler içip tanışalım mı ? ☕️🍸🍻</h1>
+    
+    <div class="img-wrapper">
+        <img id="anaGorsel" src="number11.webp">
+    </div>
+    
+    <div class="buttons" id="buttonArea">
+        <button id="yesBtn" onclick="evet()">Evet!</button>
+        <button id="noBtn" onmouseover="kac()" ontouchstart="kac(event)">Hayır</button>
+    </div>
+</div>
+
+<script>
+    // WEBP GÖRSELLERİ ÖNCEDEN YÜKLEME
+    const webpListesi = ["number11.webp", "number16.webp", "number17.webp", "number18.webp", "number19.webp"];
+    const yuklenenGorseller = {};
+
+    webpListesi.forEach(src => {
+        const img = new Image();
+        img.src = src;
+        yuklenenGorseller[src] = img;
+    });
+
+    let hamle = 0;
+    let onaylandi = false;
+
+    function gorselDegistir(yeniSrc) {
+        const resim = document.getElementById('anaGorsel');
+        resim.style.opacity = '0.5';
+        
+        if (yuklenenGorseller[yeniSrc] && yuklenenGorseller[yeniSrc].complete) {
+            resim.src = yeniSrc;
+            resim.style.opacity = '1';
+        } else {
+            const tempImg = new Image();
+            tempImg.src = yeniSrc;
+            tempImg.onload = () => {
+                resim.src = yeniSrc;
+                resim.style.opacity = '1';
+            };
+        }
+    }
+
+    // Ekran dışına taşmayan hassas kaçma fonksiyonu
+    function kac(e) {
+        if (e && e.type === 'touchstart') {
+            e.preventDefault(); // Mobilde tıklamayı engeller, sadece kaçırır
+        }
+
+        const noBtn = document.getElementById('noBtn');
+        const baslik = document.getElementById('question');
+        hamle++;
+
+        noBtn.style.position = 'fixed';
+        
+        // Ekran boyutlarını ve buton ölçülerini alıyoruz
+        const btnWidth = noBtn.offsetWidth;
+        const btnHeight = noBtn.offsetHeight;
+        
+        // Güvenli alan marjları (Ekran kenarlarından en az 20px içeride kalır)
+        const margin = 20;
+        const maxX = window.innerWidth - btnWidth - margin;
+        const maxY = window.innerHeight - btnHeight - margin;
+
+        const randomX = Math.max(margin, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(margin, Math.floor(Math.random() * maxY));
+
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+
+        // Aşama aşama metin ve görsel değişimi
+        if (hamle === 1) {
+            baslik.innerHTML = "Pardon, butonlarda bir temassızlık oldu sanırım. Bir daha bas istersen? :)";
+            gorselDegistir("number16.webp");
+        } 
+        else if (hamle === 2) {
+            baslik.innerHTML = "Valla kodlama bilgim buraya kadar yetti, 'Hayır' butonu sürekli kaçıyor!";
+            gorselDegistir("number19.webp");
+        }
+        else if (hamle >= 3) {
+            baslik.innerHTML = "Gördüğün gibi sistem bile 'Hayır'ı kabul etmiyor. Kaderden kaçılmaz! ❤️";
+            gorselDegistir("number18.webp");
+        }
+    }
+
+    function evet() {
+        if (!onaylandi) {
+            document.getElementById('question').innerHTML = "Sonunda doğru butonu buldun! DM'e ışınlanıyorsun... ✨";
+            gorselDegistir("number17.webp");
+            
+            document.getElementById('noBtn').style.display = 'none';
+            document.getElementById('yesBtn').style.transform = "scale(1.15)";
+            document.getElementById('yesBtn').innerHTML = "DM'e Geç 🚀";
+            onaylandi = true;
+        } else {
+            const instagramKullaniciAdi = "eren_okutan"; 
+            window.location.href = "https://ig.me/m/" + instagramKullaniciAdi;
+        }
+    }
+</script>
+
+</body>
+</html>
